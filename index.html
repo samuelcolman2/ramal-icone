@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<!-- O JS vai adicionar a classe 'dark' aqui se necessário -->
+<html lang="pt-br" class=""> 
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Ramais</title>
+    <link rel="shortcut icon" href="https://storage.googleapis.com/ecdt-logo-saida/a73fc637322495f3f7b01b605cd08ed04de92a0064a63bf7ab8c77c23388db0a/ICONE-COLEGIO-E-CURSO.webp">
+    
+    <!-- Carrega o Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Configuração do Tailwind para o modo escuro -->
+    <script>
+      tailwind.config = {
+        darkMode: 'class', // Habilita o modo escuro baseado na classe 'dark' no <html>
+        theme: {
+          extend: {
+            colors: {
+              'dark-bg': '#253237', // Cor de fundo personalizada para o modo escuro
+            }
+          }
+        }
+      }
+    </script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+      :root{
+        --brand:#F1663C;
+        --white:#FFFFFF;
+        --ok:#22c55e;
+        --danger:#ef4444;
+
+        /* Cantina */
+        --cantina-primary:#FD7F08;
+        --cantina-secondary:#253237;
+        --cantina-text:#FD7F08;
+        --cantina-border:#e2e8f0;
+        --cantina-border-dark: #4a5a62; /* Nova var para borda dark */
+      }
+
+      * { box-sizing: border-box; }
+      html { scroll-behavior: smooth; }
+
+      body{
+        margin:0;
+        font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+        /* O fundo e a cor do texto são controlados pelo Tailwind agora */
+      }
+
+      /* ===== Header Cantina ===== */
+      nav.cantina-nav{
+        position:sticky; top:0; z-index:50;
+        background:var(--cantina-secondary);
+        border-bottom:3px solid var(--cantina-primary);
+        color:var(--cantina-text);
+        font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      }
+      nav.cantina-nav .cantina-container{
+        max-width:min(98vw, 1400px); margin:0 auto; padding:0 12px;
+        height:96px; display:flex; align-items:center; justify-content:space-between;
+      }
+      nav.cantina-nav a{ display:flex; align-items:center; text-decoration:none; }
+      nav.cantina-nav img{ height:64px; width:auto; }
+      nav.cantina-nav .brand{ display:flex; align-items:center; gap:12px; color:var(--cantina-text); height:100%; }
+      nav.cantina-nav .brand .divider{ width:2px; height:70%; background:var(--cantina-primary); border-radius:2px; }
+      nav.cantina-nav .brand .title{
+        font-weight:800; letter-spacing:.5px;
+        font-size:clamp(18px, 3.8vw, 32px);
+        line-height:1.15; color:var(--cantina-text);
+        text-transform:uppercase;
+      }
+      nav.cantina-nav .actions{ display:flex; gap:8px; flex-wrap:wrap; align-items: center; } /* [MODIFICADO] align-items: center */
+      
+      /* Botão Genérico (incluindo dark mode) */
+      nav.cantina-nav .btn{
+        padding:10px 12px; border-radius:12px; border:1px solid var(--cantina-border);
+        background:#fff; color:#000; cursor:pointer; transition:all .15s ease; /* [MODIFICADO] transition-all */
+        font-weight:600;
+        display: inline-flex; /* [MODIFICADO] Para alinhar ícones */
+        align-items: center;
+        justify-content: center;
+      }
+      nav.cantina-nav .btn:hover{ transform:translateY(-1px); box-shadow:0 2px 10px rgba(2,8,23,.06); }
+      
+      /* Botão modo escuro (dark mode) */
+      html.dark nav.cantina-nav .btn{
+        background: #37474F; /* Um pouco mais claro que o header */
+        color: #eceff1;
+        border-color: var(--cantina-border-dark);
+      }
+      html.dark nav.cantina-nav .btn:hover{ 
+        background: #455A64;
+        box-shadow: 0 2px 10px rgba(0,0,0,.1); 
+      }
+
+      /* Botão Toggle Mobile (hambúrguer) */
+      nav.cantina-nav .menu-toggle{
+        display:none; /* Escondido no desktop */
+        border:1px solid var(--cantina-border);
+        background:#fff; color:#000; border-radius:10px;
+        padding:8px; cursor:pointer;
+        width: 44px; height: 44px; /* [MODIFICADO] Tamanho fixo para clique */
+        align-items: center; justify-content: center;
+      }
+      html.dark nav.cantina-nav .menu-toggle {
+         background: #37474F;
+         color: #eceff1;
+         border-color: var(--cantina-border-dark);
+      }
+
+      nav.cantina-nav .menu-toggle:focus-visible,
+      nav.cantina-nav .btn:focus-visible{
+        outline:2px solid var(--cantina-primary);
+        outline-offset:2px;
+      }
+      nav.cantina-nav .menu-toggle svg {
+        width: 24px; height: 24px; /* [MODIFICADO] Tamanho do ícone */
+      }
+
+      /* Mobile header */
+      @media (max-width: 640px){
+        nav.cantina-nav .cantina-container{ height:72px; position:relative; }
+        nav.cantina-nav img{ height:48px; }
+        nav.cantina-nav .brand{ flex:1; min-width:0; }
+        
+        /* Mostra o botão hambúrguer */
+        nav.cantina-nav .menu-toggle{
+          display:inline-flex; 
+        }
+
+        /* [MODIFICADO] Posição e estilo do menu mobile */
+        nav.cantina-nav .actions{
+          position:absolute; right:12px; top:calc(100% + 8px); z-index:60;
+          display:none; /* Começa escondido */
+          flex-direction:column; gap:6px;
+          background:#ffffff; border:1px solid var(--cantina-border); border-radius:12px;
+          padding:10px; width:min(78vw, 280px); box-shadow:0 12px 30px rgba(2,8,23,.18);
+          align-items: stretch; /* [MODIFICADO] Para botões esticarem */
+        }
+        nav.cantina-nav .actions.open{ 
+          display:flex; /* Mostra o menu */
+        }
+        nav.cantina-nav .actions .btn{ 
+          width:100%; 
+          justify-content:center; 
+        }
+
+        /* [MODIFICADO] Estilo dark para o menu mobile */
+        html.dark nav.cantina-nav .actions {
+          background: var(--cantina-secondary);
+          border-color: var(--cantina-border-dark);
+          box-shadow: 0 12px 30px rgba(0,0,0,.3);
+        }
+      }
+      @media (max-width: 400px){
+        nav.cantina-nav .brand .title{ font-size:clamp(16px, 5vw, 22px); }
+      }
+
+      /* Esconde ícones de sol/lua no botão de tema */
+      #theme-toggle .sun-icon,
+      html.dark #theme-toggle .moon-icon {
+        display: none;
+      }
+      html.dark #theme-toggle .sun-icon {
+        display: inline-block;
+      }
+    </style>
+</head>
+<!-- [MODIFICADO] Classes dark adicionadas para o fundo e cor do texto -->
+<body class="bg-gray-100 min-h-screen dark:bg-dark-bg dark:text-gray-200 transition-colors duration-300">
+
+    <!-- ===== HTML do header ===== -->
+    <nav class="cantina-nav" aria-label="Barra superior">
+      <div class="cantina-container">
+        <a class="brand" href="#">
+          <img src="https://iconecolegioecurso.com.br/wp-content/uploads/2022/08/xlogo_icone_site.png.pagespeed.ic_.QgXP3GszLC.webp"
+               alt="Logo Ícone Colégio e Curso"
+               onerror="this.onerror=null;this.src='https://placehold.co/150x50/eeeeee/333333?text=Logo';">
+          <span class="divider" aria-hidden="true"></span>
+          <span class="title">Lista de Ramais</span>
+        </a>
+
+        <!-- [ADICIONADO] Botão Toggle Mobile (Hambúrguer) -->
+        <button id="menu-toggle-btn" class="menu-toggle" aria-label="Abrir menu" aria-expanded="false" aria-controls="menuActions">
+          <!-- Ícone Hambúrguer -->
+          <svg id="menu-icon-open" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+          </svg>
+          <!-- Ícone Fechar (X) - escondido por padrão -->
+          <svg id="menu-icon-close" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="hidden">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+
+        <!-- [MODIFICADO] Botão de tema adicionado dentro das actions -->
+        <div id="menuActions" class="actions">
+            <!-- Botão de Tema -->
+            <button id="theme-toggle" type="button" class="btn" aria-label="Alternar modo escuro">
+              <!-- Ícone Lua (Modo Claro) -->
+              <svg class="moon-icon w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 008.25-4.5z" />
+              </svg>
+              <!-- Ícone Sol (Modo Escuro) -->
+              <svg class="sun-icon w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-6.364-.386l1.591-1.591M3 12H.75m.386-6.364l1.591 1.591M12 9a3 3 0 100 6 3 3 0 000-6z" />
+              </svg>
+              <span class="sm:hidden ml-2">Alternar Tema</span> <!-- Texto para menu mobile -->
+            </button>
+            <!-- Outros botões podem ir aqui -->
+            <!-- <button class="btn">Outra Ação</button> -->
+        </div>
+
+      </div>
+    </nav>
+
+    <!-- [MODIFICADO] Classes de padding responsivo -->
+    <div class="container mx-auto max-w-6xl p-4 sm:p-6 md:p-8">
+        
+        <header class="text-center mb-6 md:mb-10">
+            <!-- Título opcional aqui -->
+            <!-- <h1 class="text-3xl font-bold dark:text-white">Nossos Ramais</h1> -->
+        </header>
+
+        <!-- Grid de Unidades -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+
+            <!-- Unidade 1 (Classes dark adicionadas) -->
+            <div class="bg-white p-6 shadow-lg rounded-xl border border-gray-200 hover:shadow-xl transition-shadow duration-300
+                        dark:bg-gray-800 dark:border-gray-700 dark:hover:shadow-2xl dark:shadow-gray-900">
+                <h2 class="text-2xl font-semibold text-blue-700 mb-4 border-b pb-2
+                           dark:text-blue-400 dark:border-gray-700">Unidade 1</h2>
+                <ul class="space-y-3 text-gray-700 dark:text-gray-300">
+                    <li class="flex justify-between items-center">
+                        <span class="font-medium">Secretaria:</span>
+                        <span class="font-bold text-lg text-gray-800 dark:text-gray-100">10 / 11</span>
+                    </li>
+                    <li class="flex justify-between items-center">
+                        <span class="font-medium">Coordenação:</span>
+                        <span class="font-bold text-lg text-gray-800 dark:text-gray-100">15</span>
+                    </li>
+                    <li class="flex justify-between items-center">
+                        <span class="font-medium">Secretaria Escolar:</span>
+                        <span class="font-bold text-lg text-gray-800 dark:text-gray-100">13</span>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Unidade 2 (Classes dark adicionadas) -->
+            <div class="bg-white p-6 shadow-lg rounded-xl border border-gray-200 hover:shadow-xl transition-shadow duration-300
+                        dark:bg-gray-800 dark:border-gray-700 dark:hover:shadow-2xl dark:shadow-gray-900">
+                <h2 class="text-2xl font-semibold text-blue-700 mb-4 border-b pb-2
+                           dark:text-blue-400 dark:border-gray-700">Unidade 2</h2>
+                <ul class="space-y-3 text-gray-700 dark:text-gray-300">
+                    <li class="flex justify-between items-center">
+                        <span class="font-medium">Secretaria:</span>
+                        <span class="font-bold text-lg text-gray-800 dark:text-gray-100">20 / 21</span>
+                    </li>
+                    <li class="flex justify-between items-center">
+                        <span class="font-medium">Financeiro:</span>
+                        <span class="font-bold text-lg text-gray-800 dark:text-gray-100">24</span>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Unidade 3 (Classes dark adicionadas) -->
+            <div class="bg-white p-6 shadow-lg rounded-xl border border-gray-200 hover:shadow-xl transition-shadow duration-300
+                        dark:bg-gray-800 dark:border-gray-700 dark:hover:shadow-2xl dark:shadow-gray-900">
+                <h2 class="text-2xl font-semibold text-blue-700 mb-4 border-b pb-2
+                           dark:text-blue-400 dark:border-gray-700">Unidade 3</h2>
+                <ul class="space-y-3 text-gray-700 dark:text-gray-300">
+                    <li class="flex justify-between items-center">
+                        <span class="font-medium">Secretaria:</span>
+                        <span class="font-bold text-lg text-gray-800 dark:text-gray-100">30 / 31</span>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Unidade 4 (Classes dark adicionadas) -->
+            <div class="bg-white p-6 shadow-lg rounded-xl border border-gray-200 hover:shadow-xl transition-shadow duration-300
+                        dark:bg-gray-800 dark:border-gray-700 dark:hover:shadow-2xl dark:shadow-gray-900">
+                <h2 class="text-2xl font-semibold text-blue-700 mb-4 border-b pb-2
+                           dark:text-blue-400 dark:border-gray-700">Unidade 4</h2>
+                <ul class="space-y-3 text-gray-700 dark:text-gray-300">
+                    <li class="flex justify-between items-center">
+                        <span class="font-medium">Secretaria:</span>
+                        <span class="font-bold text-lg text-gray-800 dark:text-gray-100">40 / 41</span>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Unidade 5 (Classes dark adicionadas) -->
+            <div class="bg-white p-6 shadow-lg rounded-xl border border-gray-200 hover:shadow-xl transition-shadow duration-300
+                        dark:bg-gray-800 dark:border-gray-700 dark:hover:shadow-2xl dark:shadow-gray-900">
+                <h2 class="text-2xl font-semibold text-blue-700 mb-4 border-b pb-2
+                           dark:text-blue-400 dark:border-gray-700">Unidade 5</h2>
+                <ul class="space-y-3 text-gray-700 dark:text-gray-300">
+                    <li class="flex justify-between items-center">
+                        <span class="font-medium">Secretaria:</span>
+                        <span class="font-bold text-lg text-gray-800 dark:text-gray-100">50 / 51</span>
+                    </li>
+                    <li class="flex justify-between items-center">
+                        <span class="font-medium">Mônica:</span>
+                        <span class="font-bold text-lg text-gray-800 dark:text-gray-100">52 / 53</span>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Unidade 6 (Classes dark adicionadas) -->
+            <div class="bg-white p-6 shadow-lg rounded-xl border border-gray-200 hover:shadow-xl transition-shadow duration-300
+                        dark:bg-gray-800 dark:border-gray-700 dark:hover:shadow-2xl dark:shadow-gray-900">
+                <h2 class="text-2xl font-semibold text-blue-700 mb-4 border-b pb-2
+                           dark:text-blue-400 dark:border-gray-700">Unidade 6</h2>
+                <ul class="space-y-3 text-gray-700 dark:text-gray-300">
+                    <li class="flex justify-between items-center">
+                        <span class="font-medium">Secretaria:</span>
+                        <span class="font-bold text-lg text-gray-800 dark:text-gray-100">60 / 61</span>
+                    </li>
+                </ul>
+            </div>
+
+        </div> <!-- Fim do Grid -->
+
+    </div> <!-- Fim do Container -->
+
+
+    <!-- [ADICIONADO] JavaScript para Toggles -->
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        
+        // --- Lógica do Menu Mobile ---
+        const menuToggleBtn = document.getElementById('menu-toggle-btn');
+        const menuActions = document.getElementById('menuActions');
+        const menuIconOpen = document.getElementById('menu-icon-open');
+        const menuIconClose = document.getElementById('menu-icon-close');
+
+        if (menuToggleBtn && menuActions && menuIconOpen && menuIconClose) {
+          menuToggleBtn.addEventListener('click', () => {
+            const isOpen = menuActions.classList.toggle('open');
+            menuToggleBtn.setAttribute('aria-expanded', isOpen);
+            
+            // Alterna os ícones
+            menuIconOpen.classList.toggle('hidden', isOpen);
+            menuIconClose.classList.toggle('hidden', !isOpen);
+          });
+        }
+
+        // --- Lógica do Modo Escuro ---
+        const themeToggleBtn = document.getElementById('theme-toggle');
+        const htmlEl = document.documentElement;
+
+        // Função para aplicar o tema (dark/light)
+        const applyTheme = (theme) => {
+          if (theme === 'dark') {
+            htmlEl.classList.add('dark');
+          } else {
+            htmlEl.classList.remove('dark');
+          }
+        };
+
+        // Verifica o tema salvo no localStorage ou preferência do sistema
+        const currentTheme = localStorage.getItem('theme') || 
+                             (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        
+        applyTheme(currentTheme);
+
+        // Adiciona o listener ao botão de toggle
+        if (themeToggleBtn) {
+          themeToggleBtn.addEventListener('click', () => {
+            const isDark = htmlEl.classList.contains('dark');
+            const newTheme = isDark ? 'light' : 'dark';
+            
+            applyTheme(newTheme);
+            localStorage.setItem('theme', newTheme); // Salva a preferência
+          });
+        }
+      });
+    </script>
+
+</body>
+</html>
